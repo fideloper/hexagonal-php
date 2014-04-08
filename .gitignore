@@ -6,3 +6,4 @@ composer.phar
 .DS_Store
 Thumbs.db
 ._*
+.idea
