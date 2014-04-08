@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMessagesTable extends Migration {
+class CreateCategoryTicketsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,12 +12,10 @@ class CreateMessagesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('messages', function(Blueprint $table)
+		Schema::create('category_tickets', function(Blueprint $table)
 		{
-			$table->increments('id');
             $table->integer('ticket_id');
-            $table->text('note');
-			$table->timestamps();
+            $table->integer('category_id');
 		});
 	}
 
@@ -28,7 +26,7 @@ class CreateMessagesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('messages');
+		Schema::drop('category_tickets');
 	}
 
 }
