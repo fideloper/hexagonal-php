@@ -13,4 +13,9 @@ class Category extends Model {
     {
         return $this->hasMany('Hex\Staff\Ticket');
     }
+
+    public function __toString()
+    {
+        return $this->category;
+    }
 } 

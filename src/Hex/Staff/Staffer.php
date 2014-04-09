@@ -8,6 +8,6 @@ class Staffer extends Model {
 
     public function categories()
     {
-        return $this->hasOne('Hex\Tickets\Category');
+        return $this->belongsToMany('Hex\Tickets\Category', 'category_staffers');
     }
 } 

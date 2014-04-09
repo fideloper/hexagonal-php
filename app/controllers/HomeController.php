@@ -23,4 +23,25 @@ class HomeController extends BaseController {
             ->find(1);
 	}
 
+    public function addstaff()
+    {
+        // Staffer ID 2 doesn't have category ID 2
+        $staffer = \Hex\Staff\Staffer::with('categories')->find(3);
+
+        // Ticket ID 1 is assigned category ID 2
+        $ticket = \Hex\Tickets\Ticket::find(1);
+
+        // This should fail, since staffer doesn't have
+        // category 2
+        //$ticket->setStaffer( $staffer );
+
+        // We want this to reach the die() statement
+        // Staffer 2 (assigned to ticket 1) doesn't have category 2
+        $category = \Hex\Tickets\Category::find(2);
+        $ticket->setCategory( $category );
+        $ticket->setStaffer( $staffer );
+
+        /* try...catch */ $ticket->save(); /*  around this */
+    }
+
 }
