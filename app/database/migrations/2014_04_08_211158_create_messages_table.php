@@ -16,7 +16,7 @@ class CreateMessagesTable extends Migration {
 		{
 			$table->increments('id');
             $table->integer('ticket_id');
-            $table->text('note');
+            $table->text('message');
 			$table->timestamps();
 		});
 	}
