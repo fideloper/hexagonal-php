@@ -15,9 +15,12 @@ class HomeController extends BaseController {
 	|
 	*/
 
-	public function showWelcome()
+	public function hello()
 	{
-		return View::make('hello');
+		return \Hex\Tickets\Ticket::with('messages')
+            ->with('category')
+            ->with('staffer')
+            ->find(1);
 	}
 
 }

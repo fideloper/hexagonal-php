@@ -1,4 +1,4 @@
-<?php  namespace src\Hex\Staff;
+<?php  namespace Hex\Staff;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,6 +8,6 @@ class Staffer extends Model {
 
     public function categories()
     {
-        return $this->belongsToMany('Hex\Tickets\Category');
+        return $this->hasOne('Hex\Tickets\Category');
     }
 } 

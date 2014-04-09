@@ -1,4 +1,4 @@
-<?php  namespace src\Hex\Tickets;
+<?php  namespace Hex\Tickets;
 
 use Illuminate\Database\Eloquent\Model;
 
