@@ -13,4 +13,5 @@
 
 Route::get('/', 'HomeController@hello');
 Route::get('/t', 'HomeController@tests');
+Route::get('/create-ticket', 'HomeController@createTicket');
 Route::get('/addstaff', 'HomeController@addstaff');

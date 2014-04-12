@@ -10,4 +10,9 @@ class Message extends Model {
     {
         return $this->belongsTo('Hex\Tickets\Ticket');
     }
+
+    public function __toString()
+    {
+        return $this->message;
+    }
 } 

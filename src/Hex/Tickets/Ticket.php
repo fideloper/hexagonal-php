@@ -86,12 +86,24 @@ class Ticket extends Model {
 
         $saved = parent::save($options);
 
-        foreach( $this->messageQueue as $message )
-        {
-            $this->messages()->save($message);
-        }
+        $this->saveMessages();
 
         return $saved;
+    }
+
+    protected function saveMessages()
+    {
+        foreach( $this->messageQueue as $message )
+        {
+            $this->saveMessage($message);
+        }
+    }
+
+    protected function saveMessage(Message $message)
+    {
+        // Check if dirty or doesn't exist?
+        // Or doesn't matter?
+        $this->messages()->save($message);
     }
 
     // Make these protected so they aren't publicly settable?

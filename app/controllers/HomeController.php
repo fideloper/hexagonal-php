@@ -1,5 +1,7 @@
 <?php
 
+use Hex\Core\ValidationException;
+
 class HomeController extends BaseController {
 
 	/*
@@ -14,6 +16,31 @@ class HomeController extends BaseController {
 	|	Route::get('/', 'HomeController@showWelcome');
 	|
 	*/
+
+    public function createTicket()
+    {
+        // Exposing domain layer here.
+        // This should be taken care of in a repository
+        // Within the command handler
+        $category = \Hex\Tickets\Category::find( 2 );
+        $staffer = \Hex\Staff\Staffer::find( 1 );
+        $message = new \Hex\Tickets\Message;
+        $message->message = 'Some text from this request';
+
+        $command = new \Hex\Tickets\Commands\CreateTicketCommand('some subject', 'some name', 'some@email.com', $category, $staffer, $message);
+        $validator = new \Hex\Tickets\Validators\CreateTicketValidator( App::make('validator') );
+        $handler = new \Hex\Tickets\Handlers\CreateTicketHandler( $validator );
+
+        try {
+            $handler->handle($command);
+        } catch(ValidationException $e)
+        {
+            // Get errors and respond with view
+            var_dump( $e->getErrors() );
+        }
+
+        // Redirect to success
+    }
 
 	public function hello()
 	{
