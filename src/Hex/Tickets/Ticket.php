@@ -8,9 +8,12 @@ class Ticket extends Model {
 
     protected $table = 'tickets';
 
+    protected $messageQueue = [];
+
     /**
      * Assign Staffer to Ticket
      * @param Staffer $staffer
+     * @return $this
      * @throws \DomainException
      */
     public function setStaffer(Staffer $staffer)
@@ -21,11 +24,14 @@ class Ticket extends Model {
         }
 
         $this->staffer()->associate($staffer);
+
+        return $this;
     }
 
     /**
      * Assign Category to Ticket
      * @param Category $category
+     * @return $this
      */
     public function setCategory(Category $category)
     {
@@ -37,11 +43,14 @@ class Ticket extends Model {
         }
 
         $this->category()->associate($category);
+
+        return $this;
     }
 
     /**
      * Add a message to this ticket
      * @param Message $message
+     * @return $this
      */
     public function addMessage(Message $message)
     {
@@ -50,7 +59,9 @@ class Ticket extends Model {
             $this->open = true;
         }
 
-        $this->messages()->save($message);
+        $this->messageQueue[] = $message;
+
+        return $this;
     }
 
     /**
@@ -73,7 +84,14 @@ class Ticket extends Model {
             throw new DomainException('Ticket must be assigned a Category');
         }
 
-        parent::save($options);
+        $saved = parent::save($options);
+
+        foreach( $this->messageQueue as $message )
+        {
+            $this->messages()->save($message);
+        }
+
+        return $saved;
     }
 
     // Make these protected so they aren't publicly settable?

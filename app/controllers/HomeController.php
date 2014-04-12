@@ -25,11 +25,18 @@ class HomeController extends BaseController {
 
     public function tests()
     {
-        $ticket = new \Hex\Tickets\Ticket;
+        $ticket = \Hex\Tickets\Ticket::find(1);
+        return $ticket;
+
+//        $ticket = new \Hex\Tickets\Ticket;
+//
+//        $ticket->addMessage( new \Hex\Tickets\Message );
+//
+//        $ticket->save();
 
         // Throws exception, there's no category set yet
         // and we need a category first
-        $ticket->setStaffer( new \Hex\Staff\Staffer );
+        //$ticket->setStaffer( new \Hex\Staff\Staffer );
     }
 
     public function addstaff()
