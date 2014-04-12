@@ -17,7 +17,7 @@ class Ticket extends Model {
     {
         if( ! $staffer->categories->contains( $this->category ) )
         {
-            throw new DomainException('Staffer must be able to be assigned current Category: '.$this->category);
+            throw new DomainException('Staffer must be able to be assigned to Ticket\'s current Category: '.$this->category);
         }
 
         $this->staffer()->associate($staffer);
@@ -29,14 +29,28 @@ class Ticket extends Model {
      */
     public function setCategory(Category $category)
     {
-        if( ! $this->staffer->categories->contains( $category ) )
+        if( $this->staffer instanceof Staffer && ! $this->staffer->categories->contains( $category ) )
         {
             // Unset current Staffer
             // and set a "null staffer"
-            $this->staffer()->associate( new Staffer );
+            $this->staffer = null;
         }
 
         $this->category()->associate($category);
+    }
+
+    /**
+     * Add a message to this ticket
+     * @param Message $message
+     */
+    public function addMessage(Message $message)
+    {
+        if( $this->open == false )
+        {
+            $this->open = true;
+        }
+
+        $this->messages()->save($message);
     }
 
     /**
@@ -49,12 +63,12 @@ class Ticket extends Model {
     public function save(array $options = array())
     {
         // Do some testing before passing onto parent save method
-        if( $this->staffer->exists === false )
+        if( $this->staffer === null || $this->staffer->exists === false )
         {
             throw new DomainException('Ticket must be assigned a Staffer under Category: '.$this->category);
         }
 
-        if( $this->category->exists === false )
+        if( $this->category === null || $this->category->exists === false )
         {
             throw new DomainException('Ticket must be assigned a Category');
         }

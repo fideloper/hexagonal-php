@@ -23,6 +23,15 @@ class HomeController extends BaseController {
             ->find(1);
 	}
 
+    public function tests()
+    {
+        $ticket = new \Hex\Tickets\Ticket;
+
+        // Throws exception, there's no category set yet
+        // and we need a category first
+        $ticket->setStaffer( new \Hex\Staff\Staffer );
+    }
+
     public function addstaff()
     {
         // Staffer ID 2 doesn't have category ID 2

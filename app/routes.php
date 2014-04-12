@@ -12,5 +12,5 @@
 */
 
 Route::get('/', 'HomeController@hello');
-
+Route::get('/t', 'HomeController@tests');
 Route::get('/addstaff', 'HomeController@addstaff');
