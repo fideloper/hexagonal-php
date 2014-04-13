@@ -1,9 +1,14 @@
 <?php  namespace Hex\Tickets\Handlers;
 
 use Hex\Tickets\Ticket;
+use Hex\Tickets\Category;
+use Hex\Tickets\Message;
+use Hex\Staff\Staffer;
 use Hex\Tickets\Validators\CreateTicketValidator;
+use Hex\CommandBus\HandlerInterface;
+use Hex\CommandBus\CommandInterface;
 
-class CreateTicketHandler {
+class CreateTicketHandler implements HandlerInterface {
 
     /**
      * @var \Hex\Tickets\Validators\CreateTicketValidator
@@ -15,7 +20,7 @@ class CreateTicketHandler {
         $this->validator = $validator;
     }
 
-    public function handle($command)
+    public function handle(CommandInterface $command)
     {
         $this->validate($command);
         $this->save($command);
@@ -28,13 +33,16 @@ class CreateTicketHandler {
 
     protected function save($command)
     {
+        $message = new Message;
+        $message->message = $command->message;
+
         $ticket = new Ticket;
         $ticket->subject = $command->subject;
         $ticket->name = $command->name;
         $ticket->email = $command->email;
-        $ticket->setCategory( $command->category );
-        $ticket->setStaffer( $command->staffer );
-        $ticket->addMessage( $command->message );
+        $ticket->setCategory( Category::find($command->category_id) );
+        $ticket->setStaffer( Staffer::find($command->staffer_id) );
+        $ticket->addMessage( $message );
 
         $ticket->save();
     }

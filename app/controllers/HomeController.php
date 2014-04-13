@@ -1,45 +1,36 @@
 <?php
 
-use Hex\Core\ValidationException;
+use Hex\CommandBus\CommandBus;
+use Hex\Validation\ValidationException;
 
 class HomeController extends BaseController {
 
-	/*
-	|--------------------------------------------------------------------------
-	| Default Home Controller
-	|--------------------------------------------------------------------------
-	|
-	| You may wish to use controllers instead of, or in addition to, Closure
-	| based routes. That's great! Here is an example controller method to
-	| get you started. To route to this controller, just add the route:
-	|
-	|	Route::get('/', 'HomeController@showWelcome');
-	|
-	*/
+    /**
+     * @var Hex\CommandBus\CommandBus
+     */
+    private $bus;
+
+    public function __construct(CommandBus $bus)
+    {
+        $this->bus = $bus;
+    }
 
     public function createTicket()
     {
-        // Exposing domain layer here.
-        // This should be taken care of in a repository
-        // Within the command handler
-        $category = \Hex\Tickets\Category::find( 2 );
-        $staffer = \Hex\Staff\Staffer::find( 1 );
-        $message = new \Hex\Tickets\Message;
-        $message->message = 'Some text from this request';
-
-        $command = new \Hex\Tickets\Commands\CreateTicketCommand('some subject', 'some name', 'some@email.com', $category, $staffer, $message);
-        $validator = new \Hex\Tickets\Validators\CreateTicketValidator( App::make('validator') );
-        $handler = new \Hex\Tickets\Handlers\CreateTicketHandler( $validator );
+        $command = new \Hex\Tickets\Commands\CreateTicketCommand(
+            'some subject', 'some name', 'some@email.com', 2, 1, 'Some text from this request');
 
         try {
-            $handler->handle($command);
+            $this->bus->execute($command);
         } catch(ValidationException $e)
         {
-            // Get errors and respond with view
-            var_dump( $e->getErrors() );
+            dd( $e->getErrors() );
+        } catch(\DomainException $e)
+        {
+            dd($e);
         }
 
-        // Redirect to success
+        return 'Success';
     }
 
 	public function hello()

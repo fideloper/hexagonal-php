@@ -1,10 +1,8 @@
 <?php  namespace Hex\Tickets\Commands; 
 
-use Hex\Tickets\Message;
-use Hex\Tickets\Category;
-use Hex\Staff\Staffer;
+use Hex\CommandBus\CommandInterface;
 
-class CreateTicketCommand {
+class CreateTicketCommand implements CommandInterface {
 
     /**
      * @var string
@@ -22,27 +20,27 @@ class CreateTicketCommand {
     public $email;
 
     /**
-     * @var Category
+     * @var integer
      */
-    public $category;
+    public $category_id;
 
     /**
-     * @var \Hex\Staff\Staffer
+     * @var integer
      */
-    public $staffer;
+    public $staffer_id;
 
     /**
-     * @var \Hex\Tickets\Message
+     * @var string
      */
     public $message;
 
-    public function __construct($subject, $name, $email, Category $category, Staffer $staffer, Message $message)
+    public function __construct($subject, $name, $email, $category_id, $staffer_id, $message)
     {
         $this->subject = $subject;
         $this->name = $name;
         $this->email = $email;
-        $this->category = $category;
-        $this->staffer = $staffer;
+        $this->category_id = $category_id;
+        $this->staffer_id = $staffer_id;
         $this->message = $message;
     }
 } 

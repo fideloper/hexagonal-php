@@ -1,4 +1,4 @@
-<?php namespace Hex\Core;
+<?php namespace Hex\Validation;
 
 use Exception;
 use Illuminate\Support\MessageBag;

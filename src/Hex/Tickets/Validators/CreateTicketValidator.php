@@ -1,8 +1,9 @@
-<?php  namespace Hex\Tickets\Validators; 
+<?php  namespace Hex\Tickets\Validators;
 
-use Hex\Core\ValidationException;
-use Hex\Core\ValidatorInterface;
 use Illuminate\Validation\Factory;
+use Hex\Validation\ValidationException;
+use Hex\Validation\ValidatorInterface;
+use Hex\CommandBus\CommandInterface;
 
 class CreateTicketValidator implements ValidatorInterface {
 
@@ -18,8 +19,8 @@ class CreateTicketValidator implements ValidatorInterface {
         'subject' => 'required',
         'name' => 'required',
         'email' => 'required|email',
-        'category_id' => 'required',
-        'staffer_id' => 'required',
+        'category_id' => 'required|exists:categories,id',
+        'staffer_id' => 'required|exists:staff,id',
         'message' => 'required',
     ];
 
@@ -29,18 +30,18 @@ class CreateTicketValidator implements ValidatorInterface {
     }
 
     /**
-     * @param $command
-     * @throws \Hex\Core\ValidationException
+     * @param \Hex\CommandBus\CommandInterface $command
+     * @throws \Hex\Validation\ValidationException
      */
-    public function validate($command)
+    public function validate(CommandInterface $command)
     {
         $validator = $this->validator->make([
             'subject' => $command->subject,
             'name' => $command->name,
             'email' => $command->email,
-            'category_id' => $command->category->id,
-            'staffer_id' => $command->staffer->id,
-            'message' => $command->message, // Uses __toString()
+            'category_id' => $command->category_id,
+            'staffer_id' => $command->staffer_id,
+            'message' => $command->message,
         ], $this->rules);
 
         if( ! $validator->passes() )
