@@ -2,9 +2,13 @@
 
 use DomainException;
 use Hex\Staff\Staffer;
+use Hex\Tickets\Events\MessageAddedEvent;
+use Hex\Tickets\Events\TicketCreatedEvent;
 use Illuminate\Database\Eloquent\Model;
 
 class Ticket extends Model {
+
+    use \Hex\Events\Eventable;
 
     protected $table = 'tickets';
 
@@ -61,6 +65,8 @@ class Ticket extends Model {
 
         $this->messageQueue[] = $message;
 
+        $this->raise( new MessageAddedEvent($this, $message) );
+
         return $this;
     }
 
@@ -82,6 +88,11 @@ class Ticket extends Model {
         if( $this->category === null || $this->category->exists === false )
         {
             throw new DomainException('Ticket must be assigned a Category');
+        }
+
+        if( ! $this->exists )
+        {
+            $this->raise( new TicketCreatedEvent($this) );
         }
 
         $saved = parent::save($options);

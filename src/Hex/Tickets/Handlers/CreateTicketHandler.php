@@ -1,9 +1,11 @@
 <?php  namespace Hex\Tickets\Handlers;
 
+use Hex\Events\Dispatcher;
 use Hex\Tickets\Ticket;
 use Hex\Tickets\Category;
 use Hex\Tickets\Message;
 use Hex\Staff\Staffer;
+use Hex\Tickets\TicketRepositoryInterface;
 use Hex\Tickets\Validators\CreateTicketValidator;
 use Hex\CommandBus\HandlerInterface;
 use Hex\CommandBus\CommandInterface;
@@ -15,9 +17,21 @@ class CreateTicketHandler implements HandlerInterface {
      */
     private $validator;
 
-    public function __construct(CreateTicketValidator $validator)
+    /**
+     * @var \Hex\Tickets\TicketRepositoryInterface
+     */
+    private $repository;
+
+    /**
+     * @var \Hex\Events\Dispatcher
+     */
+    private $dispatcher;
+
+    public function __construct(CreateTicketValidator $validator, TicketRepositoryInterface $repository, Dispatcher $dispatcher)
     {
         $this->validator = $validator;
+        $this->repository = $repository;
+        $this->dispatcher = $dispatcher;
     }
 
     public function handle(CommandInterface $command)
@@ -44,6 +58,8 @@ class CreateTicketHandler implements HandlerInterface {
         $ticket->setStaffer( Staffer::find($command->staffer_id) );
         $ticket->addMessage( $message );
 
-        $ticket->save();
+        $this->repository->save($ticket);
+
+        $this->dispatcher->dispatch( $ticket->flushEvents() );
     }
 } 
