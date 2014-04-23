@@ -1,6 +1,4 @@
 <?php namespace Hex\CommandBus;
 
 
-interface CommandInterface {
-
-} 
+interface CommandInterface {}

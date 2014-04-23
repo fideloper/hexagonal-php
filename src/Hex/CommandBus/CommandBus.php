@@ -2,7 +2,7 @@
 
 use Illuminate\Container\Container;
 
-class CommandBus {
+class CommandBus implements CommandBusInterface {
 
     /**
      * @var \Illuminate\Container\Container
