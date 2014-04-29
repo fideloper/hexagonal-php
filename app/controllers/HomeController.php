@@ -1,21 +1,42 @@
 <?php
 
+use Hex\CommandBus\CommandBus;
+use Hex\Tickets\Commands\CreateTicketCommand;
+use Hex\Validation\ValidationException;
+
 class HomeController extends BaseController {
 
-	/*
-	|--------------------------------------------------------------------------
-	| Default Home Controller
-	|--------------------------------------------------------------------------
-	|
-	| You may wish to use controllers instead of, or in addition to, Closure
-	| based routes. That's great! Here is an example controller method to
-	| get you started. To route to this controller, just add the route:
-	|
-	|	Route::get('/', 'HomeController@showWelcome');
-	|
-	*/
+    /**
+     * @var Hex\CommandBus\CommandBus
+     */
+    private $bus;
 
-	public function hello()
+    public function __construct(CommandBus $bus)
+    {
+        $this->bus = $bus;
+    }
+
+    public function createTicket()
+    {
+        $command = new CreateTicketCommand( Input::all() );
+
+        try {
+            $this->bus->execute($command);
+        } catch(ValidationException $e)
+        {
+            return Redirect::to('/tickets/new')->withErrors( $e->getErrors() );
+        } catch(\DomainException $e)
+        {
+            return Redirect::to('/tickets/new')->withErrors( $e->getErrors() );
+        }
+
+        return Redirect::to('/tickets')->with(['message' => 'success!']);
+    }
+
+    /**
+     * Just a test method
+     */
+    public function hello()
 	{
 		return \Hex\Tickets\Ticket::with('messages')
             ->with('category')
@@ -23,6 +44,9 @@ class HomeController extends BaseController {
             ->find(1);
 	}
 
+    /**
+     * Just a test method
+     */
     public function tests()
     {
         $ticket = \Hex\Tickets\Ticket::find(1);
@@ -39,6 +63,9 @@ class HomeController extends BaseController {
         //$ticket->setStaffer( new \Hex\Staff\Staffer );
     }
 
+    /**
+     * Just a test method
+     */
     public function addstaff()
     {
         // Staffer ID 2 doesn't have category ID 2

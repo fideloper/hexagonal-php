@@ -2,9 +2,13 @@
 
 use DomainException;
 use Hex\Staff\Staffer;
+use Hex\Tickets\Events\MessageAddedEvent;
+use Hex\Tickets\Events\TicketCreatedEvent;
 use Illuminate\Database\Eloquent\Model;
 
 class Ticket extends Model {
+
+    use \Hex\Events\Eventable;
 
     protected $table = 'tickets';
 
@@ -61,6 +65,8 @@ class Ticket extends Model {
 
         $this->messageQueue[] = $message;
 
+        $this->raise( new MessageAddedEvent($this, $message) );
+
         return $this;
     }
 
@@ -84,14 +90,31 @@ class Ticket extends Model {
             throw new DomainException('Ticket must be assigned a Category');
         }
 
-        $saved = parent::save($options);
-
-        foreach( $this->messageQueue as $message )
+        if( ! $this->exists )
         {
-            $this->messages()->save($message);
+            $this->raise( new TicketCreatedEvent($this) );
         }
 
+        $saved = parent::save($options);
+
+        $this->saveMessages();
+
         return $saved;
+    }
+
+    protected function saveMessages()
+    {
+        foreach( $this->messageQueue as $message )
+        {
+            $this->saveMessage($message);
+        }
+    }
+
+    protected function saveMessage(Message $message)
+    {
+        // Check if dirty or doesn't exist?
+        // Or doesn't matter?
+        $this->messages()->save($message);
     }
 
     // Make these protected so they aren't publicly settable?
