@@ -1,5 +1,7 @@
 <?php  namespace Hex\Tickets; 
 
+use Ticket;
+use Category;
 use Hex\Staff\Staffer;
 
 class DbTicketRepository implements TicketRepositoryInterface {
@@ -27,6 +29,6 @@ class DbTicketRepository implements TicketRepositoryInterface {
 
     public function save(Ticket $ticket)
     {
-        $ticket->save();
+        return $ticket->save();
     }
 } 

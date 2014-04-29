@@ -54,8 +54,8 @@ class CreateTicketHandler implements HandlerInterface {
         $ticket->subject = $command->subject;
         $ticket->name = $command->name;
         $ticket->email = $command->email;
-        $ticket->setCategory( Category::find($command->category_id) );
-        $ticket->setStaffer( Staffer::find($command->staffer_id) );
+        $ticket->setCategory( Category::find($command->category_id) ); // Need repo
+        $ticket->setStaffer( Staffer::find($command->staffer_id) );    // Need repo
         $ticket->addMessage( $message );
 
         $this->repository->save($ticket);

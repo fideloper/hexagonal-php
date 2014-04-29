@@ -5,42 +5,22 @@ use Hex\CommandBus\CommandInterface;
 class CreateTicketCommand implements CommandInterface {
 
     /**
-     * @var string
+     * @var array
      */
-    public $subject;
+    public $data;
 
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var string
-     */
-    public $email;
-
-    /**
-     * @var integer
-     */
-    public $category_id;
-
-    /**
-     * @var integer
-     */
-    public $staffer_id;
-
-    /**
-     * @var string
-     */
-    public $message;
-
-    public function __construct($subject, $name, $email, $category_id, $staffer_id, $message)
+    public function __construct(Array $data)
     {
-        $this->subject = $subject;
-        $this->name = $name;
-        $this->email = $email;
-        $this->category_id = $category_id;
-        $this->staffer_id = $staffer_id;
-        $this->message = $message;
+        $this->data = $data;
+    }
+
+    public function __get($property)
+    {
+        if( isset($this->data[$property]) )
+        {
+            return $this->data[$property];
+        }
+
+        return null;
     }
 } 

@@ -1,4 +1,4 @@
-<?php  namespace Hex\CommandBus; 
+<?php  namespace Hex\CommandBus;
 
 use Illuminate\Container\Container;
 
@@ -22,11 +22,11 @@ class CommandBus implements CommandBusInterface {
 
     public function execute(CommandInterface $command)
     {
-        $this->getHandler($command)->handle($command);
+        return $this->getHandler($command)->handle($command);
     }
 
     private function getHandler($command)
     {
         return $this->container->make( $this->inflector->getHandler($command) );
     }
-} 
+}

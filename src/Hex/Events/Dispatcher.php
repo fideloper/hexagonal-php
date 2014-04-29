@@ -14,7 +14,7 @@ class Dispatcher {
         $this->dispatcher = $dispatcher;
     }
 
-    public function dispatch(array $events)
+    public function dispatch(Array $events)
     {
         foreach($events as $event)
         {
